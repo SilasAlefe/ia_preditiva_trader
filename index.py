@@ -8,19 +8,19 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor, plot_tree
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
+import MetaTrader5 as mt5
 
 
-df = pd.read_csv("dados.csv", sep=";", decimal=',', thousands='.')
+if not mt5.initialize():
+    print(f"Inicialização falhou, código de erro: {mt5.last_error()}")
+else:
+    print("Conexão bem sucedida")
 
-#Unindo as colunas data e hora em uma só coluna
-df['Data e hora'] = df['Data'] + ' ' +  df['Hora']
+mt5.symbol_select("WING26",True)
 
-#Apagando as colunas individuas de data e hora
-df = df.drop('Data', axis=1)
-df = df.drop('Hora', axis=1)
+df = mt5.copy_rates_from_pos("WING26", mt5.TIMEFRAME_H1, 0, 43200)
+print(df)
 
-#Mudando a ordem das colunas
-df = df[['Data e hora', 'Abertura', 'Maximo', 'Minimo', 'Fechamento', 'Volume', 'Quantidade']]
 
 #Colocando a coluna data e hora no formato ideal
 df['Data e hora'] = pd.to_datetime(df['Data e hora'], dayfirst=True)
