@@ -17,12 +17,14 @@ if not mt5.initialize():
 else:
     print("Conexão bem sucedida")
 
+x=0
+
 while True:
     #Selecionando o Ativo
     mt5.symbol_select("WINJ26",True)
 
     #Copiando o Ativo
-    dados_mt5 = mt5.copy_rates_from_pos("WINJ26", mt5.TIMEFRAME_M1, 0, 3000)
+    dados_mt5 = mt5.copy_rates_from_pos("WINJ26", mt5.TIMEFRAME_M5, 0, 50000)
 
     #Traduzindo dados para o pandas
     df = pd.DataFrame(dados_mt5)
@@ -69,7 +71,7 @@ while True:
                                                             #Você define os dados a serem usados e a própria biblioteca separa em treino e teste levando em consideração o test_size
     #Criando o modelo
     #Metodo para analises mais simples, porem, mais passível de overfit -> arvore = DecisionTreeRegressor(max_depth=3)
-    arvore = RandomForestRegressor(n_estimators=1500, random_state=42, n_jobs=-1) #n_jobs obriga a usar todos os núcleos disponíveis fezendo o processamento ser mais rápido, chegando a ser mais de 5X mais rápido
+    arvore = RandomForestRegressor(n_estimators=1000, random_state=42, n_jobs=-1) #n_jobs obriga a usar todos os núcleos disponíveis fezendo o processamento ser mais rápido, chegando a ser mais de 5X mais rápido
                                     #Mais de 500 aumenta demais o tempo e o resultado é irrelevante
     #Treinando o modelo
     inicio = time.time()
@@ -116,13 +118,22 @@ while True:
     if previsao_atual > df_historico['Target'].iloc[-1]:
         print("O próximo candle será maior: COMPRA")
     else:
-        print("O próximo candlr será menor: VENDA")
+        print("O próximo candle será menor: VENDA")
     print('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
-    minagr = datetime.datetime.now().minute
+    '''minagr = datetime.datetime.now().minute
     while True:
         if minagr != datetime.datetime.now().minute:
             time.sleep(2.5)
-            break
+            break'''
+
+    while datetime.datetime.now().minute%5==0:
+        None
+    while datetime.datetime.now().minute%5!=0:
+        None
+    time.sleep(2.5)
+
+
+
 
 
 
